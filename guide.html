@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:" />
+<title>Hướng dẫn — Thiết Bị Cho Thuê</title>
+<style>
+  :root {
+    --bg: #f5f7fa; --panel: #fff; --text: #1c2430; --muted: #667085; --line: #e4e8ee;
+    --primary: #1f5fbf; --ok: #1d7a3e; --okbg: #e3f4e8; --warn: #94650a; --warnbg: #fdf3d8; --code: #f0f3f7;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --panel: #1a2029; --text: #e6eaf0; --muted: #94a0b2; --line: #2a323e;
+      --primary: #6aa2f5; --ok: #6fd394; --okbg: #173323; --warn: #f0c45c; --warnbg: #3a2f12; --code: #222a35;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  .lead { color: var(--muted); margin: 0 0 22px; }
+  nav.toc { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 26px; }
+  nav.toc a { padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: var(--text); text-decoration: none; font-size: 13px; }
+  nav.toc a:hover { border-color: var(--primary); }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; margin-bottom: 16px; }
+  h2 { font-size: 19px; margin: 0 0 10px; display: flex; align-items: center; gap: 10px; }
+  h2 .n { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-size: 14px; flex: none; }
+  h3 { font-size: 15px; margin: 16px 0 6px; }
+  ol, ul { padding-left: 22px; margin: 6px 0; }
+  li { margin: 4px 0; }
+  code { background: var(--code); padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+  .note { background: var(--warnbg); color: var(--warn); border-radius: 10px; padding: 10px 14px; margin: 10px 0; font-size: 14px; }
+  .tip { background: var(--okbg); color: var(--ok); border-radius: 10px; padding: 10px 14px; margin: 10px 0; font-size: 14px; }
+  .btns { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .btn { display: inline-block; border: 1px solid var(--line); background: var(--panel); color: var(--text); padding: 8px 14px; border-radius: 9px; cursor: pointer; font: inherit; font-size: 14px; text-decoration: none; }
+  .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
+  .btn:hover { filter: brightness(1.05); }
+  details { border: 1px solid var(--line); border-radius: 10px; margin-top: 8px; }
+  summary { cursor: pointer; padding: 8px 12px; color: var(--muted); font-size: 14px; }
+  pre { margin: 0; max-height: 360px; overflow: auto; background: var(--code); padding: 12px; font-size: 12px; line-height: 1.45; border-radius: 0 0 10px 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); }
+  .copied { color: var(--ok); font-size: 13px; align-self: center; }
+  code.sel { user-select: all; align-self: center; }
+  .hintline { color: var(--muted); font-size: 13px; }
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; margin: 10px 0; }
+  .flow span { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+  .flow b { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Hướng dẫn sử dụng — Thiết Bị Cho Thuê</h1>
+  <p class="lead">App chạy trên Windows và macOS. Dữ liệu nằm trên <b>một file Google Sheet duy nhất</b>, dùng mãi mãi: các chi nhánh nhập trên app, chi nhánh kia thấy ngay. Lịch sử thuê lưu lại hết, xem lại theo từng tháng.</p>
+
+  <nav class="toc">
+    <a href="#tongquan">Tổng quan</a>
+    <a href="#b1">1. Tạo Google Sheet</a>
+    <a href="#b2">2. Cài app</a>
+    <a href="#b3">3. Kết nối</a>
+    <a href="#b4">4. Nhập thiết bị</a>
+    <a href="#dung">Dùng hằng ngày</a>
+    <a href="#lichsu">Xem lại tháng trước</a>
+    <a href="#iphone">iPhone</a>
+    <a href="#hai">Nhiều chi nhánh</a>
+    <a href="#hoi">Câu hỏi thường gặp</a>
+  </nav>
+
+  <section id="tongquan">
+    <h2>Tổng quan</h2>
+    <div class="flow"><span>App chi nhánh 1</span><b>⇄</b><span>Google Sheet (1 file duy nhất)</span><b>⇄</b><span>App chi nhánh 2</span></div>
+    <p>File Google Sheet sẽ có các tab:</p>
+    <table>
+      <tr><th>Tab</th><th>Chứa gì</th></tr>
+      <tr><td><b>ThietBi</b></td><td>Danh mục thiết bị bạn đang có (tên, loại, serial, giá thuê/ngày, tình trạng)</td></tr>
+      <tr><td><b>KhachHang</b></td><td>Khách hàng — tự lưu khi tạo đơn, lần sau chỉ cần gõ tên/SĐT để gọi lại</td></tr>
+      <tr><td><b>DonThue</b></td><td>Mọi đơn thuê từ trước tới nay (không bao giờ tự xóa)</td></tr>
+      <tr><td><b>NhatKy</b></td><td>Ai thêm/sửa/xóa gì, lúc nào</td></tr>
+    </table>
+    <p>Cách làm: <b>tạo file Sheet và gắn mã một lần</b> (khoảng 3 phút) → mỗi máy dán link vào app <b>một lần</b> → dùng mãi.</p>
+  </section>
+
+  <section id="b1">
+    <h2><span class="n">1</span>Tạo Google Sheet và gắn mã (1 người làm, 1 lần)</h2>
+    <ol>
+      <li>Tạo một Google Sheet trống, đặt tên ví dụ <i>Thiết bị cho thuê</i>.
+        <div class="btns">
+          <a class="btn" href="https://sheets.new" target="_blank" rel="noopener">Mở Google Sheet mới ↗</a>
+          <button class="btn" data-copy="https://sheets.new">Sao chép link</button>
+          <code class="sel">https://sheets.new</code>
+        </div>
+        <div class="hintline">Nếu bấm nút mà máy mở nhầm ứng dụng khác (VD: Mail), bấm <b>Sao chép link</b> rồi dán vào thanh địa chỉ của trình duyệt (Chrome, Cốc Cốc, Safari…).</div></li>
+      <li>Trong Sheet, vào menu <b>Tiện ích mở rộng → Apps Script</b>.</li>
+      <li>Xóa hết chữ có sẵn trong ô soạn mã, rồi bấm nút dưới đây và <b>dán (Ctrl+V / Cmd+V)</b> vào:
+        <div class="btns"><button class="btn primary" id="copy">Sao chép mã Apps Script</button><span class="copied" id="copied"></span></div>
+        <details><summary>Xem mã (Code.gs)</summary><pre id="code">/**
+ * @OnlyCurrentDoc
+ * (Dòng trên giới hạn mã chỉ được truy cập ĐÚNG file Google Sheet này, không đụng tới file khác trong Drive.)
+ *
+ * QUẢN LÝ THIẾT BỊ CHO THUÊ — Máy chủ trung gian trên Google Sheet (phiên bản 2)
+ * ------------------------------------------------------------------------------
+ * Dán toàn bộ file này vào: Google Sheet &gt; Tiện ích mở rộng &gt; Apps Script
+ * Một file Sheet dùng mãi mãi, gồm các tab:
+ *   ThietBi    — danh mục thiết bị bạn đang có
+ *   KhachHang  — danh sách khách hàng
+ *   DonThue    — mọi đơn thuê (lưu toàn bộ lịch sử, xem lại theo tháng trong app)
+ *   NhatKy     — nhật ký ai sửa gì, lúc nào
+ * Cột được nhận theo TÊN TIÊU ĐỀ, nên có thể đổi thứ tự cột hoặc thêm cột riêng.
+ * Xem hướng dẫn chi tiết trong HUONG-DAN.md
+ */
+
+/***** CẤU HÌNH — HÃY ĐỔI CÁC MÃ BẢO MẬT *****/
+// Mỗi chi nhánh một mã riêng: 'mã bảo mật': 'Tên chi nhánh'
+// - Máy nhập mã nào thì là chi nhánh đó: chỉ xem doanh thu / tiền / đơn thuê của chi nhánh mình.
+// - Thiết bị và khách hàng dùng chung. App vẫn biết thiết bị nào đang bận ở chi nhánh kia
+//   (chỉ thấy ngày thuê, không thấy tiền).
+// - Tên chi nhánh phải khớp cột "Chi nhánh" trong tab DonThue (không phân biệt hoa/thường).
+const BRANCH_KEYS = {
+  'doi-ma-chi-nhanh-1': 'Chi nhánh 1',
+  'doi-ma-chi-nhanh-2': 'Chi nhánh 2',
+};
+// Mã chủ (không bắt buộc): xem được doanh thu mọi chi nhánh. Để trống '' nếu không dùng.
+const OWNER_KEY = '';
+const VERSION = '2.2.0';
+const LOG_SHEET_NAME = 'NhatKy';
+const LOG_MAX_ROWS = 20000;
+
+const DEVICE_STATES = ['Hoạt động', 'Bảo trì', 'Ngừng sử dụng'];
+const RENTAL_STATUSES = ['Đặt trước', 'Đang thuê', 'Đã trả', 'Đã hủy'];
+const META = ['id', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy'];
+const DATETIME_KEYS = ['createdAt', 'updatedAt'];
+const RENT_TIME_KEYS = ['rentDate', 'returnDate', 'returnedDate'];   // "yyyy-MM-dd" hoặc "yyyy-MM-dd HH:mm"
+
+// [khóa, tiêu đề cột, định dạng, độ rộng]
+const TABLES = {
+  devices: {
+    sheet: 'ThietBi', label: 'Thiết bị', prefix: 'TB', required: ['name'],
+    numeric: ['price'], enums: { state: DEVICE_STATES },
+    fields: [
+      ['id', 'ID', '@', 110],
+      ['name', 'Tên thiết bị', '@', 220],
+      ['category', 'Loại', '@', 120],
+      ['serial', 'Serial / Mã', '@', 130],
+      ['branch', 'Chi nhánh', '@', 120],
+      ['price', 'Giá thuê/ngày', '#,##0', 110],
+      ['state', 'Tình trạng', '@', 120],
+      ['note', 'Ghi chú', '@', 220],
+      ['updatedAt', 'Cập nhật lúc', '@', 150],
+      ['updatedBy', 'Người cập nhật', '@', 150],
+    ],
+  },
+  customers: {
+    sheet: 'KhachHang', label: 'Khách hàng', prefix: 'KH', required: ['name'],
+    numeric: [], enums: {},
+    fields: [
+      ['id', 'ID', '@', 110],
+      ['name', 'Tên khách hàng', '@', 200],
+      ['phone', 'Số điện thoại', '@', 120],
+      ['idCard', 'CCCD / CMND', '@', 130],
+      ['address', 'Địa chỉ', '@', 240],
+      ['note', 'Ghi chú', '@', 220],
+      ['createdAt', 'Ngày tạo', '@', 150],
+      ['updatedAt', 'Cập nhật lúc', '@', 150],
+      ['updatedBy', 'Người cập nhật', '@', 150],
+    ],
+  },
+  rentals: {
+    sheet: 'DonThue', label: 'Đơn thuê', prefix: 'DT', required: ['customerName', 'branch'],
+    numeric: ['days', 'subtotal', 'discount', 'total', 'deposit', 'paid'], enums: { status: RENTAL_STATUSES },
+    fields: [
+      ['id', 'Mã đơn', '@', 120],
+      ['status', 'Trạng thái', '@', 100],
+      ['customerName', 'Khách hàng', '@', 180],
+      ['phone', 'SĐT', '@', 110],
+      ['items', 'Thiết bị', '@', 320],
+      ['rentDate', 'Ngày thuê', '@', 100],
+      ['returnDate', 'Ngày trả dự kiến', '@', 120],
+      ['returnedDate', 'Ngày trả thực tế', '@', 120],
+      ['days', 'Số ngày', '0', 70],
+      ['subtotal', 'Tạm tính', '#,##0', 110],
+      ['discount', 'Giảm giá', '#,##0', 100],
+      ['total', 'Thành tiền', '#,##0', 120],
+      ['deposit', 'Tiền cọc', '#,##0', 110],
+      ['paid', 'Đã thanh toán', '#,##0', 120],
+      ['branch', 'Chi nhánh', '@', 120],               // chi nhánh nhận đơn → doanh thu tính cho chi nhánh này
+      ['createdBranch', 'Chi nhánh tạo đơn', '@', 130],  // chi nhánh đã lên đơn (có thể tạo hộ chi nhánh khác)
+      ['note', 'Ghi chú', '@', 220],
+      ['customerId', 'Mã KH', '@', 110],
+      ['itemsJson', 'Chi tiết (không sửa tay)', '@', 160],
+      ['createdAt', 'Tạo lúc', '@', 150],
+      ['createdBy', 'Người tạo', '@', 140],
+      ['updatedAt', 'Cập nhật lúc', '@', 150],
+      ['updatedBy', 'Người cập nhật', '@', 150],
+    ],
+  },
+};
+
+/***** ĐIỂM VÀO WEB APP *****/
+function doGet(e) {
+  return handle_((e &amp;&amp; e.parameter) || {});
+}
+
+function doPost(e) {
+  var body;
+  try {
+    body = JSON.parse((e &amp;&amp; e.postData &amp;&amp; e.postData.contents) || '{}');
+  } catch (err) {
+    return json_({ ok: false, error: 'Dữ liệu gửi lên không hợp lệ' });
+  }
+  return handle_(body);
+}
+
+function handle_(req) {
+  try {
+    var me = auth_(req.key);
+    if (!me) return json_({ ok: false, code: 'AUTH', error: 'Sai mã bảo mật' });
+    req.me = me;
+    var action = req.action || 'sync';
+    var lock = LockService.getScriptLock();
+    lock.waitLock(25000);
+    try {
+      var result;
+      if (action === 'ping') {
+        Object.keys(TABLES).forEach(ensure_);
+        var ss = SpreadsheetApp.getActiveSpreadsheet();
+        result = {
+          ok: true, name: ss.getName(), version: VERSION, serverTime: now_(),
+          branch: me.branch, owner: me.owner, branches: branchNames_(),
+          url: me.owner ? ss.getUrl() : '',   // link file Sheet (chứa doanh thu mọi chi nhánh) chỉ gửi cho chủ
+        };
+      } else if (action === 'sync') result = sync_(req);
+      else if (action === 'saveRental') result = saveRental_(req);
+      else if (['add', 'update', 'delete'].indexOf(action) &gt;= 0) {
+        if (!TABLES[req.table]) result = { ok: false, error: 'Bảng không hợp lệ: ' + req.table };
+        else if (req.table === 'rentals' &amp;&amp; action === 'add') result = addRental_(clean_('rentals', req.item || {}), req);
+        else if (req.table === 'devices' &amp;&amp; action === 'add' &amp;&amp; Number(req.qty) &gt; 1) result = addDevices_(req.item || {}, Number(req.qty), req);
+        else if (action === 'add') result = add_(req.table, req.item || {}, req);
+        else if (action === 'update') result = update_(req.table, String((req.item &amp;&amp; req.item.id) || req.id || ''), req.item || {}, req);
+        else result = remove_(req.table, String(req.id || ''), req);
+      } else result = { ok: false, error: 'Hành động không hỗ trợ: ' + action };
+      SpreadsheetApp.flush();
+      return json_(result);
+    } finally {
+      lock.releaseLock();
+    }
+  } catch (err) {
+    return json_({ ok: false, error: String((err &amp;&amp; err.message) || err) });
+  }
+}
+
+/***** PHÂN QUYỀN CHI NHÁNH *****/
+// → { branch: 'Chi nhánh 1', owner: false } | { branch: '', owner: true } | null (sai mã)
+function auth_(key) {
+  key = String(key || '');
+  if (!key) return null;
+  if (OWNER_KEY &amp;&amp; key === OWNER_KEY) return { branch: '', owner: true };
+  if (Object.prototype.hasOwnProperty.call(BRANCH_KEYS, key)) return { branch: String(BRANCH_KEYS[key]).trim(), owner: false };
+  return null;
+}
+
+function sameBranch_(a, b) {
+  return String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
+}
+
+// Người đang gọi có được xem đầy đủ / sửa đơn này không:
+// chủ → mọi đơn; chi nhánh → đơn của chi nhánh mình, hoặc đơn mình đã tạo hộ chi nhánh khác
+function ownsRental_(req, rental) {
+  return req.me.owner || sameBranch_(rental.branch, req.me.branch) || sameBranch_(rental.createdBranch, req.me.branch);
+}
+
+// Danh sách tên chi nhánh (theo BRANCH_KEYS, không trùng)
+function branchNames_() {
+  var out = [];
+  Object.keys(BRANCH_KEYS).forEach(function (k) {
+    var b = String(BRANCH_KEYS[k]).trim();
+    if (b &amp;&amp; !out.some(function (x) { return sameBranch_(x, b); })) out.push(b);
+  });
+  return out;
+}
+
+// Tên chi nhánh chuẩn (đúng chữ hoa/thường như trong BRANCH_KEYS), '' nếu không có
+function canonBranch_(b) {
+  return branchNames_().filter(function (x) { return sameBranch_(x, b); })[0] || '';
+}
+
+// Đơn mới: chi nhánh nhận đơn = chi nhánh được chọn (mặc định là chi nhánh mình);
+// chi nhánh tạo đơn = chi nhánh của mã đang dùng (chủ: để trống). Trả về lỗi hoặc null.
+function prepareNewRental_(item, req) {
+  var want = String(item.branch || '').trim() || req.me.branch;
+  var b = canonBranch_(want);
+  if (!b) return { ok: false, error: want ? 'Chi nhánh "' + want + '" không có trong BRANCH_KEYS' : 'Chưa chọn chi nhánh cho đơn thuê' };
+  item.branch = b;
+  item.createdBranch = req.me.owner ? '' : req.me.branch;
+  return null;
+}
+
+// Đơn của chi nhánh khác: chỉ giữ thông tin để biết thiết bị bận lúc nào.
+// Bỏ toàn bộ tiền, giá, ghi chú và mọi thông tin khách hàng.
+function maskRental_(r) {
+  var items = [];
+  try {
+    items = JSON.parse(r.itemsJson || '[]').map(function (i) { return { id: i.id, name: i.name, serial: i.serial || '' }; });
+  } catch (err) { items = []; }
+  return {
+    id: r.id, status: r.status, branch: r.branch,
+    items: r.items, itemsJson: JSON.stringify(items),
+    rentDate: r.rentDate, returnDate: r.returnDate, returnedDate: r.returnedDate,
+    updatedAt: r.updatedAt, masked: true,
+  };
+}
+
+function forbidden_(what) {
+  return { ok: false, code: 'FORBIDDEN', error: (what || 'Đơn này') + ' thuộc chi nhánh khác — chỉ chi nhánh đó mới sửa được' };
+}
+
+// Tạo đơn: chi nhánh bắt buộc và phải là một chi nhánh có thật trong BRANCH_KEYS
+function addRental_(item, req) {
+  var err = prepareNewRental_(item, req);
+  return err || add_('rentals', item, req);
+}
+
+// Thêm nhiều thiết bị giống nhau một lần (VD 2 máy cùng loại chưa có serial): mỗi máy là 1 dòng riêng,
+// serial để trống — bổ sung sau bằng cách sửa từng máy.
+function addDevices_(src, qty, req) {
+  qty = Math.max(1, Math.min(50, Math.floor(qty) || 1));
+  var items = [];
+  for (var i = 0; i &lt; qty; i++) {
+    var item = {};
+    Object.keys(src).forEach(function (k) { item[k] = src[k]; });
+    if (qty &gt; 1) item.serial = '';   // nhiều máy: serial không thể giống nhau → để trống, điền sau
+    var res = add_('devices', item, req);
+    if (!res.ok) return res;
+    items.push(res.item);
+  }
+  return { ok: true, item: items[0], items: items };
+}
+
+/***** ĐỒNG BỘ *****/
+// since = thời điểm lần đồng bộ trước → chỉ gửi các dòng đã đổi + danh sách ID (để app biết dòng nào bị xóa)
+function sync_(req) {
+  var serverTime = now_();
+  var since = String(req.since || '');
+  var tables = {};
+  Object.keys(TABLES).forEach(function (name) { tables[name] = readTable_(name, since); });   // khách hàng, thiết bị: dùng chung
+  if (!req.me.owner) {
+    tables.rentals.rows = tables.rentals.rows.map(function (r) { return ownsRental_(req, r) ? r : maskRental_(r); });
+  }
+  return {
+    ok: true, serverTime: serverTime, full: !since, tables: tables,
+    branch: req.me.branch, owner: req.me.owner, branches: branchNames_(),
+  };
+}
+
+function readTable_(name, since) {
+  var info = ensure_(name), sh = info.sh, last = sh.getLastRow();
+  if (last &lt; 2) return { rows: [], ids: [] };
+  var values = sh.getRange(2, 1, last - 1, info.width).getValues();
+  var rows = [], ids = [], stamp = now_();
+  for (var i = 0; i &lt; values.length; i++) {
+    if (isBlankRow_(values[i])) continue;
+    var it = toItem_(info, values[i]);
+    if (!it.id || !it.updatedAt) {               // dòng gõ tay trên Sheet: cấp ID + mốc thời gian
+      if (!it.id) {
+        it.id = newId_(info.t.prefix);
+        sh.getRange(i + 2, info.cols.id).setValue(it.id);
+      }
+      if (!it.updatedAt) {
+        it.updatedAt = stamp;
+        sh.getRange(i + 2, info.cols.updatedAt).setValue(stamp);
+      }
+    }
+    ids.push(it.id);
+    if (!since || it.updatedAt &gt;= since) rows.push(it);
+  }
+  return { rows: rows, ids: ids };
+}
+
+/***** THÊM / SỬA / XÓA *****/
+function add_(name, src, req) {
+  var info = ensure_(name), t = info.t;
+  var item = clean_(name, src);
+  for (var i = 0; i &lt; t.required.length; i++) {
+    if (!item[t.required[i]]) return { ok: false, error: 'Thiếu ' + labelOf_(name, t.required[i]) };
+  }
+  var stamp = now_();
+  item.id = name === 'rentals' ? nextRentalId_(info) : newId_(t.prefix);
+  if (info.cols.createdAt) item.createdAt = stamp;
+  if (info.cols.createdBy) item.createdBy = by_(req);
+  item.updatedAt = stamp;
+  item.updatedBy = by_(req);
+  Object.keys(t.enums).forEach(function (k) { item[k] = item[k] || t.enums[k][0]; });
+  writeRow_(info, info.sh.getLastRow() + 1, item);
+  log_(t.label, 'Thêm', item, req, '');
+  return { ok: true, item: item };
+}
+
+function update_(name, id, src, req) {
+  var info = ensure_(name), t = info.t;
+  var rowNum = findRow_(info, id);
+  if (!rowNum) return { ok: false, code: 'NOT_FOUND', error: t.label + ' không còn tồn tại (có thể đã bị xóa)' };
+  var current = toItem_(info, info.sh.getRange(rowNum, 1, 1, info.width).getValues()[0]);
+  if (name === 'rentals' &amp;&amp; !ownsRental_(req, current)) return forbidden_();
+  if (!req.force &amp;&amp; req.expectedUpdatedAt &amp;&amp; current.updatedAt &amp;&amp; current.updatedAt !== req.expectedUpdatedAt) {
+    return { ok: false, code: 'CONFLICT', error: t.label + ' vừa được người khác cập nhật', current: current };
+  }
+  var changes = clean_(name, src);
+  if (name === 'rentals') delete changes.createdBranch;   // chi nhánh tạo đơn do máy chủ ghi, không sửa được
+  // đổi chi nhánh nhận đơn: phải là chi nhánh có thật
+  if (name === 'rentals' &amp;&amp; 'branch' in changes) {
+    var b = canonBranch_(changes.branch);
+    if (!b) return { ok: false, error: 'Chi nhánh "' + changes.branch + '" không có trong BRANCH_KEYS' };
+    changes.branch = b;
+  }
+  var next = {};
+  Object.keys(current).forEach(function (k) { next[k] = current[k]; });
+  Object.keys(changes).forEach(function (k) { next[k] = changes[k]; });
+  for (var i = 0; i &lt; t.required.length; i++) {
+    if (!next[t.required[i]]) return { ok: false, error: 'Thiếu ' + labelOf_(name, t.required[i]) };
+  }
+  next.id = current.id;
+  next.updatedAt = now_();
+  next.updatedBy = by_(req);
+  writeRow_(info, rowNum, next);
+  log_(t.label, 'Sửa', next, req, diff_(name, current, next));
+  return { ok: true, item: next };
+}
+
+function remove_(name, id, req) {
+  var info = ensure_(name);
+  var rowNum = findRow_(info, id);
+  if (!rowNum) return { ok: true, deleted: false };
+  var current = toItem_(info, info.sh.getRange(rowNum, 1, 1, info.width).getValues()[0]);
+  if (name === 'rentals' &amp;&amp; !ownsRental_(req, current)) return forbidden_();
+  if (!req.force &amp;&amp; req.expectedUpdatedAt &amp;&amp; current.updatedAt &amp;&amp; current.updatedAt !== req.expectedUpdatedAt) {
+    return { ok: false, code: 'CONFLICT', error: info.t.label + ' vừa được người khác cập nhật', current: current };
+  }
+  info.sh.deleteRow(rowNum);
+  log_(info.t.label, 'Xóa', current, req, '');
+  return { ok: true, deleted: true };
+}
+
+/**
+ * Lưu đơn thuê cùng thông tin khách:
+ *  - customer.id có sẵn → cập nhật thông tin khách (chỉ các ô có nhập)
+ *  - không có id nhưng trùng SĐT với khách cũ → dùng khách cũ
+ *  - còn lại → tạo khách mới
+ */
+function saveRental_(req) {
+  var rental = req.rental || {};
+  var changes = clean_('rentals', rental);
+  // kiểm tra quyền + chi nhánh TRƯỚC khi đụng tới khách hàng
+  if (rental.id) {
+    var rInfo = ensure_('rentals'), rRow = findRow_(rInfo, String(rental.id));
+    if (rRow &amp;&amp; !ownsRental_(req, toItem_(rInfo, rInfo.sh.getRange(rRow, 1, 1, rInfo.width).getValues()[0]))) return forbidden_();
+  } else {
+    var err = prepareNewRental_(changes, req);
+    if (err) return err;
+  }
+  if (rental.id &amp;&amp; 'branch' in changes) {          // sửa đơn, đổi chi nhánh nhận đơn
+    var b = canonBranch_(changes.branch);
+    if (!b) return { ok: false, error: changes.branch ? 'Chi nhánh "' + changes.branch + '" không có trong BRANCH_KEYS' : 'Chưa chọn chi nhánh cho đơn thuê' };
+    changes.branch = b;
+  }
+  var customer = null;
+  if (req.customer &amp;&amp; String(req.customer.name || '').trim()) {
+    customer = upsertCustomer_(req.customer, req);
+    changes.customerId = customer.id;
+    changes.customerName = customer.name;
+    changes.phone = customer.phone;
+  }
+  var res = rental.id ? update_('rentals', String(rental.id), changes, req) : add_('rentals', changes, req);
+  if (!res.ok) {
+    res.customer = customer;
+    return res;
+  }
+  return { ok: true, rental: res.item, customer: customer };
+}
+
+// Khách hàng dùng chung giữa các chi nhánh: trùng SĐT với khách cũ (ở bất kỳ chi nhánh nào) → dùng khách cũ
+function upsertCustomer_(src, req) {
+  var info = ensure_('customers');
+  var c = clean_('customers', src);
+  var id = String(src.id || '').trim();
+  var byPhone = false;
+  var rowNum = id ? findRow_(info, id) : 0;
+  var current = rowNum ? toItem_(info, info.sh.getRange(rowNum, 1, 1, info.width).getValues()[0]) : null;
+  if (!rowNum &amp;&amp; c.phone) {
+    var found = findBy_(info, function (it) { return digits_(it.phone) &amp;&amp; digits_(it.phone) === digits_(c.phone); });
+    if (found) { rowNum = findRow_(info, found.id); current = found; byPhone = true; }
+  }
+  if (!rowNum) return add_('customers', c, req).item;
+  var changed = false, next = {};
+  Object.keys(current).forEach(function (k) { next[k] = current[k]; });
+  Object.keys(c).forEach(function (k) {
+    if (c[k] === '' || String(c[k]) === String(current[k])) return;
+    if (byPhone &amp;&amp; current[k] !== '') return;   // nhận ra qua SĐT: chỉ điền ô còn trống
+    next[k] = c[k];
+    changed = true;
+  });
+  if (!changed) return current;
+  next.updatedAt = now_();
+  next.updatedBy = by_(req);
+  writeRow_(info, rowNum, next);
+  log_('Khách hàng', 'Sửa', next, req, diff_('customers', current, next));
+  return next;
+}
+
+/***** CẤU TRÚC BẢNG *****/
+var INFO_CACHE_ = {};
+function ensure_(name) {
+  if (INFO_CACHE_[name]) return INFO_CACHE_[name];
+  var t = TABLES[name];
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(t.sheet) || ss.insertSheet(t.sheet);
+  var lastCol = Math.max(sh.getLastColumn(), 1);
+  var header = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(function (h) { return String(h).trim(); });
+  while (header.length &amp;&amp; header[header.length - 1] === '') header.pop();
+  var cols = {}, added = false;
+  t.fields.forEach(function (f) {
+    var i = header.indexOf(f[1]);
+    if (i &lt; 0) {
+      i = header.length;
+      header.push(f[1]);
+      sh.getRange(1, i + 1).setValue(f[1]);
+      formatColumn_(sh, i + 1, f, t);
+      added = true;
+    }
+    cols[f[0]] = i + 1;
+  });
+  if (added) styleHeader_(sh, header.length);
+  INFO_CACHE_[name] = { sh: sh, t: t, cols: cols, width: header.length };
+  return INFO_CACHE_[name];
+}
+
+function formatColumn_(sh, col, f, t) {
+  var rows = sh.getMaxRows() - 1;
+  if (rows &gt; 0) {
+    var range = sh.getRange(2, col, rows, 1);
+    range.setNumberFormat(f[2]);
+    if (t.enums[f[0]]) {
+      range.setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(t.enums[f[0]], true).setAllowInvalid(true).build());
+    }
+  }
+  sh.setColumnWidth(col, f[3]);
+}
+
+function styleHeader_(sh, width) {
+  sh.getRange(1, 1, 1, width).setFontWeight('bold').setBackground('#1F3A5F').setFontColor('#FFFFFF');
+  sh.setFrozenRows(1);
+}
+
+function writeRow_(info, rowNum, item) {
+  var sh = info.sh;
+  if (rowNum &gt; sh.getMaxRows()) sh.insertRowsAfter(sh.getMaxRows(), 200);
+  var range = sh.getRange(rowNum, 1, 1, info.width);
+  var vals = range.getValues()[0];
+  var fmts = range.getNumberFormats()[0];
+  info.t.fields.forEach(function (f) {
+    var c = info.cols[f[0]] - 1;
+    var v = item[f[0]];
+    vals[c] = v === undefined || v === null ? '' : v;
+    fmts[c] = f[2];
+  });
+  range.setNumberFormats([fmts]);
+  range.setValues([vals]);
+}
+
+function findRow_(info, id) {
+  if (!id) return 0;
+  var last = info.sh.getLastRow();
+  if (last &lt; 2) return 0;
+  var ids = info.sh.getRange(2, info.cols.id, last - 1, 1).getValues();
+  for (var i = 0; i &lt; ids.length; i++) if (String(ids[i][0]).trim() === id) return i + 2;
+  return 0;
+}
+
+function findBy_(info, fn) {
+  var last = info.sh.getLastRow();
+  if (last &lt; 2) return null;
+  var values = info.sh.getRange(2, 1, last - 1, info.width).getValues();
+  for (var i = 0; i &lt; values.length; i++) {
+    if (isBlankRow_(values[i])) continue;
+    var it = toItem_(info, values[i]);
+    if (fn(it)) return it;
+  }
+  return null;
+}
+
+function nextRentalId_(info) {
+  var prefix = 'DT' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyMMdd') + '-';
+  var max = 0, last = info.sh.getLastRow();
+  if (last &gt;= 2) {
+    info.sh.getRange(2, info.cols.id, last - 1, 1).getValues().forEach(function (r) {
+      var s = String(r[0]);
+      if (s.indexOf(prefix) === 0) max = Math.max(max, Number(s.slice(prefix.length)) || 0);
+    });
+  }
+  return prefix + ('00' + (max + 1)).slice(-3);
+}
+
+function toItem_(info, row) {
+  var item = {}, t = info.t;
+  t.fields.forEach(function (f) {
+    var k = f[0], v = row[info.cols[k] - 1];
+    if (v instanceof Date) {
+      var tz = Session.getScriptTimeZone();
+      var fmt = 'yyyy-MM-dd';
+      if (DATETIME_KEYS.indexOf(k) &gt;= 0) fmt = 'yyyy-MM-dd HH:mm:ss';
+      else if (RENT_TIME_KEYS.indexOf(k) &gt;= 0 &amp;&amp; Utilities.formatDate(v, tz, 'HH:mm') !== '00:00') fmt = 'yyyy-MM-dd HH:mm';
+      v = Utilities.formatDate(v, tz, fmt);
+    }
+    if (t.numeric.indexOf(k) &gt;= 0) item[k] = toNum_(v);
+    else item[k] = String(v === null || v === undefined ? '' : v).trim();
+  });
+  return item;
+}
+
+function clean_(name, src) {
+  var t = TABLES[name], out = {};
+  t.fields.forEach(function (f) {
+    var k = f[0];
+    if (META.indexOf(k) &gt;= 0 || !(k in src)) return;
+    var v = src[k];
+    if (t.numeric.indexOf(k) &gt;= 0) out[k] = toNum_(v);
+    else out[k] = String(v === null || v === undefined ? '' : v).trim().slice(0, k === 'itemsJson' ? 45000 : 2000);
+  });
+  Object.keys(t.enums).forEach(function (k) {
+    if (k in out &amp;&amp; t.enums[k].indexOf(out[k]) &lt; 0) out[k] = t.enums[k][0];
+  });
+  return out;
+}
+
+function toNum_(v) {
+  if (typeof v === 'number') return v;
+  var s = String(v === null || v === undefined ? '' : v).trim();
+  if (!s) return '';
+  var n = Number(s.replace(/[^\d-]/g, ''));
+  return isNaN(n) ? '' : n;
+}
+
+function labelOf_(name, key) {
+  var f = TABLES[name].fields.filter(function (x) { return x[0] === key; })[0];
+  return f ? f[1] : key;
+}
+
+function diff_(name, a, b) {
+  var out = [];
+  TABLES[name].fields.forEach(function (f) {
+    var k = f[0];
+    if (META.indexOf(k) &gt;= 0 || k === 'itemsJson') return;
+    if (String(a[k]) !== String(b[k])) out.push(f[1] + ': "' + a[k] + '" → "' + b[k] + '"');
+  });
+  return out.join('; ');
+}
+
+function logSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName(LOG_SHEET_NAME);
+  if (!sh) {
+    sh = ss.insertSheet(LOG_SHEET_NAME);
+    sh.getRange(1, 1, 1, 7).setValues([['Thời gian', 'Người thực hiện', 'Bảng', 'Hành động', 'ID', 'Tên', 'Chi tiết']]);
+    styleHeader_(sh, 7);
+    sh.setColumnWidth(7, 480);
+  }
+  return sh;
+}
+
+function log_(table, action, item, req, detail) {
+  try {
+    var sh = logSheet_();
+    var title = item.name || [item.customerName, item.items].filter(String).join(' — ');
+    sh.appendRow([now_(), by_(req), table, action, item.id, title, detail]);
+    if (sh.getLastRow() &gt; LOG_MAX_ROWS) sh.deleteRows(2, 1000);
+  } catch (err) { /* không chặn thao tác chính nếu ghi nhật ký lỗi */ }
+}
+
+function isBlankRow_(row) {
+  for (var i = 0; i &lt; row.length; i++) if (String(row[i]).trim() !== '') return false;
+  return true;
+}
+
+function digits_(s) {
+  return String(s || '').replace(/\D/g, '');
+}
+
+var ID_SEQ_ = 0;   // tạo nhiều dòng trong cùng 1 mili-giây vẫn không trùng ID
+function newId_(prefix) {
+  return prefix + Date.now().toString(36).toUpperCase() + (ID_SEQ_++).toString(36).toUpperCase() + Math.floor(Math.random() * 1296).toString(36).toUpperCase();
+}
+
+function now_() {
+  return Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm:ss');
+}
+
+function by_(req) {
+  return String(req.by || 'Không rõ').slice(0, 100);
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+/***** KHI SỬA TRỰC TIẾP TRÊN GOOGLE SHEET *****/
+// Tự cập nhật "Cập nhật lúc" để app nhận ra thay đổi và tránh ghi đè.
+function onEdit(e) {
+  if (!e || !e.range) return;
+  var sheetName = e.range.getSheet().getName();
+  var name = Object.keys(TABLES).filter(function (n) { return TABLES[n].sheet === sheetName; })[0];
+  if (!name) return;
+  var info = ensure_(name);
+  var metaCols = META.map(function (k) { return info.cols[k]; }).filter(Boolean);
+  var onlyMeta = true;
+  for (var c = e.range.getColumn(); c &lt;= e.range.getLastColumn(); c++) {
+    if (metaCols.indexOf(c) &lt; 0) { onlyMeta = false; break; }
+  }
+  if (onlyMeta) return;
+  var start = Math.max(e.range.getRow(), 2), end = e.range.getLastRow();
+  if (end &lt; start) return;
+  var rows = info.sh.getRange(start, 1, end - start + 1, info.width).getValues();
+  var stamp = now_();
+  rows.forEach(function (r, i) {
+    if (isBlankRow_(r)) return;
+    var rowNum = start + i;
+    if (!String(r[info.cols.id - 1]).trim()) info.sh.getRange(rowNum, info.cols.id).setValue(newId_(info.t.prefix));
+    info.sh.getRange(rowNum, info.cols.updatedAt).setValue(stamp);
+    info.sh.getRange(rowNum, info.cols.updatedBy).setValue('Sửa trên Google Sheet');
+  });
+}
+
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('Thiết bị cho thuê')
+    .addItem('Cài đặt / sửa định dạng bảng', 'caiDatBang')
+    .addToUi();
+}
+
+function caiDatBang() {
+  Object.keys(TABLES).forEach(function (name) {
+    var info = ensure_(name);
+    styleHeader_(info.sh, info.width);
+    info.t.fields.forEach(function (f) { formatColumn_(info.sh, info.cols[f[0]], f, info.t); });
+  });
+  logSheet_();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var blank = ss.getSheetByName('Sheet1') || ss.getSheetByName('Trang tính1');
+  if (blank &amp;&amp; blank.getLastRow() === 0 &amp;&amp; ss.getSheets().length &gt; 1) ss.deleteSheet(blank);
+  ss.toast('Đã cài đặt các bảng ThietBi, KhachHang, DonThue', 'Thiết bị cho thuê');
+}
+</pre></details>
+      </li>
+      <li>Ở gần đầu mã, <b>đặt mã bảo mật riêng cho từng chi nhánh</b> và đúng tên chi nhánh, ví dụ:<br>
+        <code>const BRANCH_KEYS = {<br>&nbsp;&nbsp;'Q1@2026-kx7': 'CN Quận 1',<br>&nbsp;&nbsp;'TD@2026-m4p': 'CN Thủ Đức',<br>};</code><br>
+        Muốn tự mình xem doanh thu mọi chi nhánh thì đặt thêm <b>mã chủ</b>: <code>const OWNER_KEY = 'Chu@2026-zz9';</code> (để <code>''</code> nếu không dùng).<br>
+        <span class="hintline">Tên chi nhánh phải khớp cột <b>Chi nhánh</b> của các đơn cũ trong tab DonThue — đơn không có tên chi nhánh chỉ mã chủ mới thấy.</span></li>
+      <li>Bấm 💾 <b>Lưu</b>.</li>
+      <li><b>Cấp quyền trước</b> (làm bước này trước khi triển khai — tránh lỗi không hiện link):
+        <ul>
+          <li>Trên thanh công cụ, ở ô chọn hàm (cạnh nút <b>▶ Chạy / Run</b> và <b>Gỡ lỗi / Debug</b>), chọn <code>caiDatBang</code>.</li>
+          <li>Bấm <b>▶ Chạy (Run)</b> → hiện "Cần cấp quyền" → bấm <b>Xem xét quyền (Review permissions)</b> → chọn tài khoản Google <b>chủ của file Sheet</b>.</li>
+          <li><b>Màn hình "Google chưa xác minh ứng dụng này"</b> (có thể không xuất hiện):
+            <ul>
+              <li>⚠️ <b>Đừng bấm vào địa chỉ email</b> trên trang — bấm vào đó máy sẽ mở ứng dụng Mail.</li>
+              <li>⚠️ <b>Đừng bấm nút xanh "Quay lại trang an toàn"</b>.</li>
+              <li>Bấm dòng chữ nhỏ <b>Nâng cao (Advanced)</b> ở góc dưới bên trái → hiện thêm dòng <b>Đi tới … (không an toàn) / Go to … (unsafe)</b> ở cuối → bấm vào dòng đó.</li>
+            </ul></li>
+          <li><b>Màn hình xin quyền</b> ("… muốn truy cập vào Tài khoản Google của bạn"):
+            <ul>
+              <li>⚠️ Lại <b>đừng bấm vào email</b> ở đầu trang.</li>
+              <li><b>Cuộn xuống dưới cùng</b>. Nếu có ô <b>Chọn tất cả (Select all)</b> thì tích vào.</li>
+              <li>Bấm nút <b>Tiếp tục (Continue)</b> hoặc <b>Cho phép (Allow)</b> ở góc dưới bên phải.</li>
+            </ul>
+            Đây là mã của chính bạn, chỉ truy cập đúng file Sheet này.</li>
+          <li>Ở dưới hiện <i>"Đã hoàn tất thực thi"</i> là xong; quay lại tab Google Sheet sẽ thấy các tab <b>ThietBi, KhachHang, DonThue</b>.</li>
+        </ul></li>
+      <li>Bấm <b>Triển khai (Deploy) → Tùy chọn triển khai mới (New deployment)</b>:
+        <ul>
+          <li>Bấm ⚙ cạnh "Chọn loại" → <b>Ứng dụng web (Web app)</b></li>
+          <li><b>Thực thi với tư cách:</b> Tôi (Me)</li>
+          <li><b>Người có quyền truy cập:</b> <b>Bất kỳ ai (Anyone)</b></li>
+          <li>Bấm <b>Triển khai</b> — vì đã cấp quyền ở bước trên nên link hiện ra ngay.</li>
+        </ul></li>
+      <li>Sao chép <b>URL ứng dụng web</b> — dạng <code>https://script.google.com/macros/s/AKfy…/exec</code>.</li>
+    </ol>
+    <div class="note"><b>Không thấy link?</b> Link vẫn còn đó, lấy lại như sau: <b>Triển khai → Quản lý triển khai (Manage deployments)</b> → chọn bản triển khai ở cột bên trái → mục <b>Ứng dụng web</b> có <b>URL</b> và nút <b>Sao chép</b>.
+      Nếu danh sách trống (chưa triển khai được), làm lại bước <b>Cấp quyền trước</b> rồi <b>Tùy chọn triển khai mới</b>. Xem thêm mục <a href="#loiquyen">lỗi cấp quyền trên Mac</a>.</div>
+    <div class="tip">Gửi <b>URL /exec</b> cho cả hai chi nhánh, nhưng mỗi chi nhánh <b>chỉ nhận mã của mình</b> (qua Zalo riêng chẳng hạn).
+      <b>Không chia sẻ file Google Sheet</b> cho nhân viên chi nhánh — trong file có doanh thu của mọi chi nhánh.</div>
+  </section>
+
+  <section id="b2">
+    <h2><span class="n">2</span>Cài app trên từng máy</h2>
+    <table>
+      <tr><th>Máy</th><th>File</th></tr>
+      <tr><td>macOS (Intel và Apple M1/M2/M3…)</td><td><code>ThietBiChoThue-…-mac.dmg</code> → mở ra, kéo app vào <b>Applications</b></td></tr>
+      <tr><td>Windows 10/11</td><td><code>ThietBiChoThue-…-Windows-Setup.exe</code> (cài đặt) hoặc <code>…-Windows-Portable.exe</code> (bấm đúp là chạy)</td></tr>
+    </table>
+    <div class="note"><b>Lần mở đầu tiên</b> máy có thể cảnh báo vì app chưa mua chứng chỉ ký số:<br>
+      • <b>macOS:</b> bấm Xong → <b>Cài đặt hệ thống → Quyền riêng tư & Bảo mật</b> → kéo xuống bấm <b>Vẫn mở (Open Anyway)</b>.<br>
+      • <b>Windows:</b> bấm <b>More info → Run anyway</b>.</div>
+  </section>
+
+  <section id="b3">
+    <h2><span class="n">3</span>Kết nối app với Google Sheet (mỗi máy 1 lần)</h2>
+    <p>Mở app → bấm <b>⚙ Cài đặt</b> (lần đầu tự hiện):</p>
+    <table>
+      <tr><th>Ô</th><th>Nhập</th></tr>
+      <tr><td>Link Web App</td><td>URL <code>…/exec</code> ở bước 1</td></tr>
+      <tr><td>Mã bảo mật của chi nhánh</td><td>Mã của chi nhánh máy này trong <code>BRANCH_KEYS</code> (hoặc mã chủ)</td></tr>
+      <tr><td>Tên người dùng / máy</td><td>VD: <i>Lan – CN Quận 1</i> (để biết ai đã sửa)</td></tr>
+      <tr><td>Chi nhánh mặc định</td><td>Để trống — app tự nhận chi nhánh theo mã. Chỉ dùng khi đăng nhập bằng mã chủ.</td></tr>
+    </table>
+    <p>Bấm <b>Kiểm tra kết nối</b> → thấy <i>✓ Kết nối thành công … — chi nhánh: …</i> → <b>Lưu</b>. App nhớ luôn, lần sau mở là dùng.</p>
+  </section>
+
+  <section id="b4">
+    <h2><span class="n">4</span>Nhập danh mục thiết bị (làm trước)</h2>
+    <ol>
+      <li>Vào tab <b>Thiết bị</b> → <b>＋ Thêm thiết bị</b>.</li>
+      <li>Nhập tên, loại (Máy ảnh, Ống kính, Đèn…), <b>giá thuê/ngày</b>. Serial có thể để trống, điền sau.</li>
+      <li>Có nhiều máy giống nhau (VD 2 máy Sony A7 IV)? Nhập <b>Số lượng máy</b> = 2 → app tạo 2 thiết bị riêng, mỗi máy cho thuê được độc lập. Serial của từng máy điền sau bằng cách bấm vào máy đó.</li>
+      <li>Thiết bị hỏng: đổi <b>Tình trạng</b> sang <i>Bảo trì</i>. Không dùng nữa: <i>Ngừng sử dụng</i> (vẫn giữ lịch sử, không hiện khi tạo đơn).</li>
+    </ol>
+    <div class="tip">Có nhiều thiết bị? Có thể dán thẳng vào tab <b>ThietBi</b> trên Google Sheet (cột Tên thiết bị, Loại, Serial / Mã, Giá thuê/ngày…). App tự cấp ID ở lần đồng bộ sau.</div>
+  </section>
+
+  <section id="dung">
+    <h2>Dùng hằng ngày</h2>
+    <h3>Tạo đơn thuê</h3>
+    <ol>
+      <li>Tab <b>Đơn thuê</b> → <b>＋ Tạo đơn thuê</b>.</li>
+      <li><b>Khách hàng:</b> gõ vài chữ của tên hoặc vài số điện thoại → chọn khách cũ trong danh sách hiện ra (tự điền SĐT, CCCD, địa chỉ). Khách mới thì cứ nhập tên + SĐT — app tự lưu vào danh sách khách hàng.</li>
+      <li><b>Thiết bị:</b> bấm vào thiết bị trong danh sách để chọn (bấm lại để bỏ). Mỗi thiết bị hiện <i>Trống</i>, <i>Đang thuê đến…</i> hoặc <i>Đã đặt…</i> theo đúng ngày của đơn. Có thể sửa giá riêng cho đơn này.</li>
+      <li>Chọn <b>ngày thuê / ngày trả dự kiến</b> → app tự tính số ngày, tạm tính, thành tiền. Nhập giảm giá, <b>tiền cọc</b>, và số tiền khách đã <b>thu trước</b> (không tính cọc).</li>
+      <li><b>Tiền cọc được trừ vào lần thanh toán cuối:</b> Còn phải thu = Tiền thuê − Giảm giá − Tiền cọc − Thu trước. Số này hiện luôn ở cột <b>Còn phải thu</b> ngoài danh sách đơn (đỏ = còn nợ, xanh = phải trả lại khách, “Đủ” = đã thu đủ). Cọc nhiều hơn số phải trả → app hiện <b>Trả lại khách</b> (màu xanh). Đơn hủy → trả lại toàn bộ cọc và tiền đã trả.</li>
+      <li><b>Không cần nhập tay khi khách trả đủ:</b> trong form đơn, tick <b>☑ Đã thu đủ</b> cạnh ô Thu trước (app tự điền Thu trước = Thành tiền − Tiền cọc). Hoặc bấm nút <b>✓ Thu đủ</b> ngay dưới số tiền ở cột Còn phải thu ngoài danh sách.</li>
+      <li><b>Trạng thái:</b> <i>Đặt trước</i> (giữ máy cho ngày sau) hoặc <i>Đang thuê</i> (giao máy luôn). Bấm <b>Lưu đơn</b>. Mã đơn tự tạo dạng <code>DT261111-001</code>.</li>
+    </ol>
+    <h3>Giao máy, trả máy</h3>
+    <ul>
+      <li>Đơn <i>Đặt trước</i> → nút <b>Giao máy</b> khi khách đến lấy.</li>
+      <li>Đơn <i>Đang thuê</i> → nút <b>Trả máy</b>: app điền ngày trả thực tế là hôm nay, tính lại số ngày (nếu trả trễ), bạn nhập số tiền khách trả lúc trả máy vào ô Thu trước rồi lưu — app tự trừ tiền cọc và báo còn phải thu hay phải trả lại khách.</li>
+      <li>Khách hủy: mở đơn, đổi trạng thái sang <i>Đã hủy</i> (giữ lại lịch sử, không tính doanh thu).</li>
+    </ul>
+    <h3>Tab Thiết bị và Khách hàng</h3>
+    <ul>
+      <li><b>Thiết bị:</b> xem máy nào đang ở chỗ khách nào, đến ngày nào; bấm vào để xem lịch sử cho thuê của máy đó. Nút <b>Cho thuê</b> tạo đơn với máy đã chọn sẵn.</li>
+      <li><b>Khách hàng:</b> số lần thuê, tổng chi, còn nợ; bấm vào để xem các đơn cũ. Nút <b>Tạo đơn</b> tạo đơn mới cho khách đó.</li>
+    </ul>
+    <h3>Phím tắt</h3>
+    <p><code>Ctrl/Cmd + N</code> tạo mới · <code>Ctrl/Cmd + F</code> tìm · <code>Ctrl/Cmd + 1/2/3</code> chuyển tab · <code>F5</code> làm mới</p>
+  </section>
+
+  <section id="lichsu">
+    <h2>Xem lại các tháng trước</h2>
+    <p>Ở tab <b>Đơn thuê</b>, phía trên có 3 chế độ:</p>
+    <ul>
+      <li><b>Đang hoạt động</b> — các đơn đặt trước và đang thuê (mặc định).</li>
+      <li><b>Theo tháng</b> — chọn tháng bằng ◀ ▶ hoặc ô chọn tháng; xem số đơn, <b>doanh thu</b>, đã thu, còn phải thu của tháng đó (tính theo ngày thuê).</li>
+      <li><b>Tất cả</b> — toàn bộ lịch sử.</li>
+    </ul>
+    <p>Bấm <b>Xuất Excel</b> để lưu danh sách đang xem ra file mở bằng Excel.</p>
+  </section>
+
+  <section id="iphone">
+    <h2>Dùng trên iPhone</h2>
+    <ol>
+      <li>Mở <b>Safari</b> trên iPhone, vào link web app (chủ gửi cho bạn).</li>
+      <li>Bấm nút <b>Chia sẻ</b> (ô vuông có mũi tên lên) → <b>Thêm vào Màn hình chính</b> → <b>Thêm</b>.</li>
+      <li>Mở app bằng icon <b>TB Cho Thuê</b> trên màn hình chính — app chạy toàn màn hình như app bình thường.</li>
+      <li>Lần đầu: nhập <b>link /exec</b> và <b>mã bảo mật của chi nhánh</b> giống như trên máy tính.</li>
+    </ol>
+    <ul>
+      <li>Trên điện thoại: thanh tab ở dưới (Đơn thuê / Thiết bị / Khách hàng), nút <b>＋</b> để tạo mới, nút <b>⋯</b> cho Xuất Excel, Hướng dẫn, Cài đặt.</li>
+      <li>Mất mạng vẫn mở được app và xem dữ liệu lần cuối; chưa lưu được cho đến khi có mạng.</li>
+      <li>Mỗi iPhone nhớ cài đặt riêng. Xóa icon khỏi màn hình chính thì phải nhập lại link và mã.</li>
+    </ul>
+  </section>
+
+  <section id="hai">
+    <h2>Nhiều chi nhánh cùng dùng</h2>
+    <ul>
+      <li><b>Doanh thu tách riêng:</b> mỗi chi nhánh chỉ thấy đơn thuê, doanh thu, tiền đã thu / còn phải thu của chi nhánh mình — kể cả khi xuất Excel. Máy chủ lọc dữ liệu theo mã bảo mật, nên chi nhánh khác không tải được về.</li>
+      <li><b>Thiết bị dùng chung:</b> mọi chi nhánh cùng xem, thêm, sửa danh mục thiết bị (thiết bị không gắn chi nhánh) và cùng thấy số máy đang cho thuê / đã đặt / còn trống. Máy đang ở chi nhánh khác hiện tên chi nhánh và ngày giờ trả — không thấy tiền của đơn đó.</li>
+      <li><b>Khách hàng dùng chung:</b> danh sách khách (tên, SĐT, CCCD, địa chỉ) là một danh sách chung cho mọi chi nhánh; khách đã thuê ở chi nhánh này sang chi nhánh kia gõ SĐT là ra. Cột "Số lần thuê / Tổng chi" chỉ tính các đơn của chi nhánh đang xem.</li>
+      <li><b>Đơn thuê luôn có chi nhánh nhận đơn</b> (mặc định là chi nhánh mình). Chi nhánh này có thể <b>tạo đơn hộ chi nhánh khác</b>: chọn chi nhánh khác ở ô <i>Chi nhánh</i> → <b>doanh thu tính cho chi nhánh được chọn</b>, đơn ghi "tạo bởi …". Chi nhánh tạo hộ vẫn xem và xử lý được đơn đó (giao máy, nhận trả) nhưng không cộng vào doanh thu của mình.</li>
+      <li><b>Thời gian thuê có giờ:</b> nhập giờ cạnh ngày (gõ <code>930</code> hoặc <code>9h30</code> → 09:30). Có đủ giờ nhận và giờ trả thì số ngày tính tiền = mỗi 24 giờ một ngày, lẻ làm tròn lên (sửa tay được).</li>
+      <li>Mã chủ thấy <b>doanh thu từng chi nhánh</b> cạnh nhau (không cộng tổng); bấm vào một chi nhánh để chỉ xem chi nhánh đó.</li>
+      <li>App tự lấy dữ liệu mới mỗi 20 giây (chỉnh được trong Cài đặt), và khi bạn quay lại cửa sổ app.</li>
+      <li>Hai bên sửa <b>khác ô</b> của cùng một đơn → app tự gộp. Sửa <b>cùng ô</b> → app hiện giá trị hai bên và hỏi có ghi đè không.</li>
+      <li>Khi tạo đơn, thiết bị đang bị chi nhánh kia cho thuê/đặt trùng ngày sẽ được cảnh báo.</li>
+      <li>Mất mạng: app vẫn xem được dữ liệu lần cuối, nhưng chưa lưu được cho đến khi có mạng.</li>
+      <li>Có thể xem/sửa trực tiếp trên Google Sheet — <b>đừng đổi tên các tab</b> và <b>đừng sửa cột "Chi tiết (không sửa tay)"</b>.</li>
+    </ul>
+  </section>
+
+  <section id="hoi">
+    <h2>Câu hỏi thường gặp</h2>
+    <h3 id="loiquyen">Bấm "Đi tới … (không an toàn)" xong không hiện link / mở ra Mail / cửa sổ trắng / báo lỗi</h3>
+    <ol>
+      <li><b>Lấy lại link:</b> Apps Script → <b>Triển khai → Quản lý triển khai</b> → sao chép URL ở mục Ứng dụng web.</li>
+      <li><b>Mở ra ứng dụng Mail:</b> do bấm nhầm vào <b>địa chỉ email</b> trên trang của Google. Đóng Mail, quay lại trang Google, bấm <b>Nâng cao → Đi tới … (không an toàn)</b>, rồi cuộn xuống bấm <b>Tiếp tục / Cho phép</b>.</li>
+      <li><b>Đăng nhập nhiều tài khoản Google</b> (nguyên nhân hay gặp nhất): cửa sổ cấp quyền bị lẫn tài khoản. Mở <b>cửa sổ ẩn danh</b> của Chrome (<code>Cmd + Shift + N</code>), chỉ đăng nhập <b>tài khoản chủ file Sheet</b>, mở lại Sheet → Apps Script và làm lại bước <b>Cấp quyền trước</b>.</li>
+      <li><b>Dùng Safari:</b> Safari hay chặn cửa sổ bật lên của Google. Nên dùng <b>Google Chrome</b>; hoặc trong Safari vào <b>Cài đặt → Trang web → Cửa sổ bật lên</b>, chọn <i>Cho phép</i> cho <code>script.google.com</code>.</li>
+      <li>Tài khoản Google <b>công ty/trường học</b> có thể bị quản trị viên chặn cấp quyền cho mã chưa xác minh → dùng tài khoản Gmail cá nhân để tạo file Sheet.</li>
+    </ol>
+    <h3>Thêm chi nhánh mới (VD: Vĩnh Long)</h3>
+    <ol>
+      <li>Mở Apps Script, thêm một dòng vào <code>BRANCH_KEYS</code>: <code>'VL@2026-q8w': 'Vĩnh Long',</code></li>
+      <li>Lưu → <b>Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai</b> (link <code>/exec</code> giữ nguyên).</li>
+      <li>Cài app ở máy Vĩnh Long, nhập link <code>/exec</code> và mã của Vĩnh Long.</li>
+    </ol>
+    <p>Vĩnh Long thấy ngay toàn bộ thiết bị dùng chung và máy nào đang bận; chỉ thấy đơn, khách, doanh thu của Vĩnh Long. Các chi nhánh khác không cần làm gì — danh sách chi nhánh trong app tự cập nhật.</p>
+    <h3>Báo "Google yêu cầu đăng nhập"</h3>
+    <p>Ở bước 1 chưa chọn <b>Người có quyền truy cập: Bất kỳ ai</b>. Vào Apps Script → <b>Triển khai → Quản lý triển khai → ✏️</b> sửa lại.</p>
+    <h3>Báo "Sai mã bảo mật"</h3>
+    <p>Mã trong app không khớp mã nào trong <code>BRANCH_KEYS</code> / <code>OWNER_KEY</code> (phân biệt chữ hoa/thường). Nhớ <b>triển khai phiên bản mới</b> sau khi sửa mã.</p>
+    <h3>Dán nhầm link file Google Sheet</h3>
+    <p>App sẽ nhắc. Cần link Web App kết thúc bằng <code>/exec</code> (bước 1, mục 8).</p>
+    <h3>Cập nhật mã Apps Script khi có bản mới</h3>
+    <p>Dán mã mới đè lên → Lưu → <b>Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai</b>. Link <code>/exec</code> giữ nguyên, app không cần cài lại. Dữ liệu cũ giữ nguyên.</p>
+    <h3>Bảo mật</h3>
+    <p>Ai có link Web App <i>và</i> mã của một chi nhánh thì đọc/ghi được dữ liệu của chi nhánh đó (cùng thiết bị, khách hàng dùng chung). Mỗi chi nhánh chỉ giữ mã của mình; mã chủ chỉ chủ giữ. Muốn đổi mã: sửa <code>BRANCH_KEYS</code> / <code>OWNER_KEY</code>, triển khai phiên bản mới, rồi đổi mã trong app ở các máy.</p>
+    <h3>Sao lưu</h3>
+    <p>Google Sheet tự lưu lịch sử phiên bản (<b>Tệp → Nhật ký phiên bản</b>). Muốn chắc hơn: thỉnh thoảng <b>Tệp → Tạo bản sao</b>.</p>
+  </section>
+</div>
+<script>
+  async function copyText(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+      var ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e2) {}
+      ta.remove();
+      return ok;
+    }
+  }
+  document.getElementById('copy').addEventListener('click', async function () {
+    var ok = await copyText(document.getElementById('code').textContent);
+    document.getElementById('copied').textContent = ok ? '✓ Đã sao chép — dán vào Apps Script' : 'Không sao chép được, hãy mở "Xem mã" và chọn tất cả để sao chép';
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', async function () {
+      var ok = await copyText(b.dataset.copy);
+      var old = b.textContent;
+      b.textContent = ok ? '✓ Đã sao chép' : 'Không sao chép được';
+      setTimeout(function () { b.textContent = old; }, 2000);
+    });
+  });
+</script>
+</body>
+</html>

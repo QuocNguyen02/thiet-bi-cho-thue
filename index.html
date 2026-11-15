@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <!-- Web app trên iPhone: thêm vào Màn hình chính → mở toàn màn hình như app -->
+  <meta name="theme-color" content="#1f3a5f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="TB Cho Thuê" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com http://localhost:* http://127.0.0.1:*" />
+  <title>Quản Lý Thiết Bị Cho Thuê</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M4 7h16v2H4zm1 4h14v9H5zm3 2v2h8v-2zM7 3h10l1 3H6z"/></svg>
+      </div>
+      <div>
+        <h1>Thiết Bị Cho Thuê</h1>
+        <div class="sub"><span id="sheetName">Chưa kết nối</span></div>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-view="rentals" title="Ctrl/Cmd + 1">Đơn thuê</button>
+      <button data-view="devices" title="Ctrl/Cmd + 2">Thiết bị</button>
+      <button data-view="customers" title="Ctrl/Cmd + 3">Khách hàng</button>
+    </nav>
+    <div class="sync" id="syncBox" title="Trạng thái đồng bộ">
+      <span class="dot" id="syncDot"></span>
+      <span id="syncText">Chưa kết nối</span>
+    </div>
+    <div class="actions">
+      <span class="who" id="whoLabel"></span>
+      <button class="btn ghost icon" id="btnRefresh" title="Tải lại dữ liệu (F5)">⟳</button>
+      <button class="btn ghost icon mobile-only" id="btnMore" title="Thêm" aria-haspopup="true" aria-expanded="false">⋯</button>
+      <!-- trên máy tính: các nút nằm thẳng hàng; trên điện thoại: gom vào nút ⋯ -->
+      <div class="more-menu" id="moreMenu">
+        <button class="btn ghost" id="btnOpenSheet" title="Mở Google Sheet trên trình duyệt">Google Sheet</button>
+        <button class="btn ghost" id="btnExport" title="Xuất danh sách đang xem ra file Excel (CSV)">Xuất Excel</button>
+        <button class="btn ghost" id="btnGuide" title="Hướng dẫn cài đặt và sử dụng">Hướng dẫn</button>
+        <button class="btn ghost" id="btnSettings" title="Cài đặt kết nối">⚙ Cài đặt</button>
+      </div>
+      <button class="btn primary" id="btnAdd">＋ Tạo đơn thuê</button>
+    </div>
+  </header>
+
+  <div class="banner hidden" id="banner"></div>
+
+  <section class="period" id="period">
+    <div class="seg" id="periodSeg">
+      <button data-period="active">Đang hoạt động</button>
+      <button data-period="month">Theo tháng</button>
+      <button data-period="all">Tất cả</button>
+    </div>
+    <div class="month-nav" id="monthNav">
+      <button class="btn ghost icon" id="mPrev" title="Tháng trước">◀</button>
+      <div class="mp-wrap">
+        <button class="mp-btn" id="monthBtn" type="button" aria-haspopup="true" aria-expanded="false"></button>
+        <div class="mp-panel hidden" id="monthPanel" role="dialog" aria-label="Chọn tháng">
+          <div class="mp-head">
+            <button class="btn ghost icon" id="mpYPrev" type="button" title="Năm trước">◀</button>
+            <b id="mpYear"></b>
+            <button class="btn ghost icon" id="mpYNext" type="button" title="Năm sau">▶</button>
+          </div>
+          <div class="mp-grid" id="mpGrid"></div>
+        </div>
+      </div>
+      <button class="btn ghost icon" id="mNext" title="Tháng sau">▶</button>
+      <button class="btn ghost sm" id="mNow">Tháng này</button>
+    </div>
+  </section>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="filters">
+    <input type="search" id="q" placeholder="Tìm kiếm…  (Ctrl/Cmd + F)" />
+    <select id="f1"></select>
+    <select id="f2"></select>
+    <span class="count" id="count"></span>
+  </section>
+
+  <main class="table-wrap">
+    <table id="table">
+      <thead id="thead"></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty hidden" id="empty"></div>
+  </main>
+
+  <!-- ===== Đơn thuê ===== -->
+  <dialog id="dlgRental" class="wide">
+    <form id="rentalForm" method="dialog" autocomplete="off">
+      <div class="dlg-head">
+        <h2 id="rTitle" tabindex="-1" autofocus>Tạo đơn thuê</h2>
+        <span class="code" id="rCode"></span>
+        <span class="branch-tag" id="rBranchTag"></span>
+      </div>
+      <div class="rgrid">
+        <div class="col">
+          <section class="box box-cust">
+            <h3>Khách hàng</h3>
+            <div class="cust-search">
+              <input id="custName" placeholder="Gõ tên hoặc SĐT để tìm khách cũ — hoặc nhập tên khách mới" />
+              <div class="suggest hidden" id="custSuggest"></div>
+            </div>
+            <div class="cust-badge" id="custBadge"></div>
+            <div class="grid g3">
+              <label>Số điện thoại<input id="custPhone" inputmode="tel" /></label>
+              <label>CCCD / CMND<input id="custIdCard" /></label>
+              <label>Địa chỉ<input id="custAddress" /></label>
+            </div>
+          </section>
+
+          <section class="box box-time">
+            <h3>Thời gian & thanh toán</h3>
+            <div class="grid g3">
+              <label>Trạng thái<select name="status" id="rStatus"></select></label>
+              <label>Chi nhánh *<select name="branch" id="rBranch"></select></label>
+              <label>Số ngày tính tiền<input name="days" type="number" min="0" step="1" /></label>
+              <label>Thuê lúc<span class="dt"><input name="rentDate" type="date" /><input name="rentTime" class="time" placeholder="--:--" maxlength="5" inputmode="numeric" title="Giờ nhận máy, VD 09:30" /></span></label>
+              <label>Trả dự kiến<span class="dt"><input name="returnDate" type="date" /><input name="returnTime" class="time" placeholder="--:--" maxlength="5" inputmode="numeric" title="Giờ trả dự kiến, VD 18:00" /></span></label>
+              <label id="returnedWrap">Trả thực tế<span class="dt"><input name="returnedDate" type="date" /><input name="returnedTime" class="time" placeholder="--:--" maxlength="5" inputmode="numeric" title="Giờ khách trả máy" /></span></label>
+              <label>Giảm giá (đ)<input name="discount" inputmode="numeric" class="money" /></label>
+              <label title="Tiền cọc được trừ vào số tiền khách phải trả cuối cùng">Tiền cọc (đ)<input name="deposit" inputmode="numeric" class="money" /></label>
+              <!-- không bọc cả ô trong <label>: bấm chữ "Thu trước" không được tick nhầm ô "Đã thu đủ" -->
+              <div class="field" title="Số tiền khách đã trả trước, không tính tiền cọc">
+                <div class="lbl-row"><span>Thu trước (đ)</span>
+                  <label class="paid-full" title="Tự điền Thu trước = Thành tiền − Tiền cọc, còn phải thu về 0"><input type="checkbox" id="rPaidFull" /> Đã thu đủ</label></div>
+                <input name="paid" inputmode="numeric" class="money" />
+              </div>
+              <label class="span3">Ghi chú<textarea name="note" rows="1"></textarea></label>
+            </div>
+            <div class="summary" id="rSummary"></div>
+          </section>
+        </div>
+
+        <div class="col">
+          <section class="box box-dev grow">
+            <h3>Chọn thiết bị <span class="muted" id="pickHint"></span></h3>
+            <input type="search" id="devSearch" placeholder="Tìm thiết bị theo tên, loại, serial…" />
+            <div class="picker" id="devPicker"></div>
+            <h3 class="mt">Đã chọn <span class="muted" id="selCount"></span></h3>
+            <div class="selected" id="selList"></div>
+          </section>
+        </div>
+      </div>
+      <div class="dlg-actions">
+        <button type="button" class="btn danger ghost" id="rDelete">Xóa đơn</button>
+        <p class="meta inline" id="rMeta"></p>
+        <span class="spacer"></span>
+        <button type="button" class="btn ghost" data-close>Đóng</button>
+        <button type="submit" class="btn primary" id="rSave">Lưu đơn</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== Thiết bị ===== -->
+  <dialog id="dlgDevice">
+    <form id="deviceForm" method="dialog" autocomplete="off">
+      <h2 id="dTitle" tabindex="-1" autofocus>Thêm thiết bị</h2>
+      <div class="grid">
+        <label class="span2">Tên thiết bị *<input name="name" required maxlength="200" /></label>
+        <label>Loại<input name="category" list="dlCategory" placeholder="Máy ảnh, Ống kính, Đèn…" /></label>
+        <label>Serial / Mã<input name="serial" placeholder="Có thể để trống, điền sau" /></label>
+        <label id="dQtyWrap">Số lượng máy<input name="qty" type="number" min="1" max="50" step="1" value="1" title="Thêm nhiều máy giống nhau một lần — mỗi máy là một thiết bị riêng" /></label>
+        <label>Giá thuê/ngày (đ)<input name="price" inputmode="numeric" class="money" /></label>
+        <label>Tình trạng<select name="state" id="dState"></select></label>
+        <label class="span2">Ghi chú<textarea name="note" rows="2"></textarea></label>
+      </div>
+      <div class="history" id="dHistory"></div>
+      <p class="meta" id="dMeta"></p>
+      <div class="dlg-actions">
+        <button type="button" class="btn danger ghost" id="dDelete">Xóa</button>
+        <button type="button" class="btn ghost" id="dRent">Cho thuê thiết bị này</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn ghost" data-close>Đóng</button>
+        <button type="submit" class="btn primary">Lưu</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== Khách hàng ===== -->
+  <dialog id="dlgCustomer">
+    <form id="customerForm" method="dialog" autocomplete="off">
+      <h2 id="cTitle" tabindex="-1" autofocus>Thêm khách hàng</h2>
+      <div class="grid">
+        <label class="span2">Tên khách hàng *<input name="name" required maxlength="200" /></label>
+        <label>Số điện thoại<input name="phone" inputmode="tel" /></label>
+        <label>CCCD / CMND<input name="idCard" /></label>
+        <label class="span2">Địa chỉ<input name="address" /></label>
+        <label class="span2">Ghi chú<textarea name="note" rows="2"></textarea></label>
+      </div>
+      <div class="history" id="cHistory"></div>
+      <p class="meta" id="cMeta"></p>
+      <div class="dlg-actions">
+        <button type="button" class="btn danger ghost" id="cDelete">Xóa</button>
+        <button type="button" class="btn ghost" id="cRent">Tạo đơn cho khách này</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn ghost" data-close>Đóng</button>
+        <button type="submit" class="btn primary">Lưu</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== Cài đặt ===== -->
+  <dialog id="dlgSettings">
+    <form id="settingsForm" method="dialog" autocomplete="off">
+      <h2 tabindex="-1" autofocus>Cài đặt kết nối Google Sheet</h2>
+      <p class="hint">Chỉ cần làm <b>một lần</b>. Dán <b>link Web App</b> (dạng <code>https://script.google.com/macros/s/…/exec</code>) và mã bảo mật.
+        Các chi nhánh dùng <b>cùng một link</b> nhưng <b>mỗi chi nhánh một mã riêng</b> — mã quyết định máy này thuộc chi nhánh nào
+        và chỉ xem được doanh thu của chi nhánh đó. Chưa có link? Bấm <a href="#" id="settingsGuide">Hướng dẫn</a>.</p>
+      <label>Link Web App<input name="url" placeholder="https://script.google.com/macros/s/…/exec" required /></label>
+      <label>Mã bảo mật của chi nhánh<input name="key" type="password" placeholder="Một mã trong BRANCH_KEYS của mã Apps Script" required /></label>
+      <div class="grid three">
+        <label>Tên người dùng / máy<input name="user" placeholder="VD: Lan - CN Quận 1" required /></label>
+        <label>Chi nhánh mặc định<input name="branch" placeholder="Tự nhận theo mã bảo mật" title="Chỉ dùng với mã chủ: chi nhánh điền sẵn khi tạo đơn" /></label>
+        <label>Tự làm mới mỗi (giây)<input name="refreshSec" type="number" min="5" max="600" /></label>
+      </div>
+      <p class="test" id="testResult"></p>
+      <div class="dlg-actions">
+        <button type="button" class="btn ghost" id="btnTest">Kiểm tra kết nối</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn ghost" data-close>Hủy</button>
+        <button type="submit" class="btn primary">Lưu</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== Hướng dẫn ===== -->
+  <dialog id="dlgGuide" class="guide">
+    <div class="guide-head">
+      <h2>Hướng dẫn</h2>
+      <span class="spacer"></span>
+      <button type="button" class="btn ghost" data-close>Đóng</button>
+    </div>
+    <iframe id="guideFrame" title="Hướng dẫn"></iframe>
+  </dialog>
+
+  <!-- ===== Xác nhận ===== -->
+  <dialog id="dlgConfirm">
+    <form method="dialog">
+      <h2 id="cfTitle"></h2>
+      <p id="cfMsg"></p>
+      <div class="dlg-actions">
+        <span class="spacer"></span>
+        <button value="cancel" class="btn ghost" id="cfCancel">Hủy</button>
+        <button value="ok" class="btn primary" id="cfOk">Đồng ý</button>
+      </div>
+    </form>
+  </dialog>
+
+  <datalist id="dlCategory"></datalist>
+
+  <div class="toasts" id="toasts"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
